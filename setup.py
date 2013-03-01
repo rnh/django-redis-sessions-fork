@@ -25,7 +25,11 @@ setup(
     license='BSD',
     packages=packages,
     zip_safe=False,
-    install_requires=['redis>=2.4.10'],
+    install_requires=[
+        'redis>=2.4.10',
+        'django>=1.4',
+        'hiredis>=0.1.1'
+    ],
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 2",
