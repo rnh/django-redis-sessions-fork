@@ -26,7 +26,7 @@ if not "__pypy__" in sys.builtin_module_names:
 
 setup(
     name='django-redis-sessions-fork',
-    version='0.5.0',
+    version='0.5.1',
     description="Redis Session Backend For Django",
     long_description=long_description(),
     keywords='django, sessions,',

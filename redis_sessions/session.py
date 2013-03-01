@@ -57,22 +57,23 @@ class SessionStore(SessionBase):
             return
 
     def save(self, must_create=False):
-        if must_create and self.exists(self._get_or_create_session_key()):
+        session_key = self._get_or_create_session_key()
+        if must_create and self.exists(session_key):
             raise CreateError
         data = self.encode(self._get_session(no_load=must_create))
         if redis.VERSION[0] >= 2:
             self.server.setex(
-                self.get_real_stored_key(self._get_or_create_session_key()),
+                self.get_real_stored_key(session_key),
                 self.get_expiry_age(),
                 data
             )
         else:
             self.server.set(
-                self.get_real_stored_key(self._get_or_create_session_key()),
+                self.get_real_stored_key(session_key),
                 data
             )
             self.server.expire(
-                self.get_real_stored_key(self._get_or_create_session_key()),
+                self.get_real_stored_key(session_key),
                 self.get_expiry_age()
             )
 
@@ -87,10 +88,6 @@ class SessionStore(SessionBase):
             pass
 
     def get_real_stored_key(self, session_key):
-        """Return the real key name in redis storage
-        @return string
-        """
-        prefix = settings.SESSION_REDIS_PREFIX
-        if not prefix:
+        if not settings.SESSION_REDIS_PREFIX:
             return session_key
-        return ':'.join([prefix, session_key])
+        return '%s:%s' % (settings.SESSION_REDIS_PREFIX, session_key)
