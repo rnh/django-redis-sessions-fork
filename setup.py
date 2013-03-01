@@ -14,14 +14,14 @@ packages = ['redis_sessions']
 
 
 setup(
-    name='django-redis-sessions',
+    name='django-redis-sessions-fork',
     version=__version__,
     description="Redis Session Backend For Django",
     long_description=long_description(),
     keywords='django, sessions,',
     author='Martin Rusev',
-    author_email='martinmcloud@gmail.com',
-    url='http://github.com/martinrusev/django-redis-sessions',
+    author_email='hellysmile@gmail.com',
+    url='http://pypi.python.org/pypi/django-redis-sessions-fork',
     license='BSD',
     packages=packages,
     zip_safe=False,

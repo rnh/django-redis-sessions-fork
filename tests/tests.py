@@ -1,9 +1,10 @@
-from redis_sessions.session import SessionStore
 import time
 from nose.tools import eq_
+from django.utils.importlib import import_module
+from django.conf import settings
 
 
-redis_session = SessionStore()
+redis_session = import_module(settings.SESSION_ENGINE).SessionStore()
 
 
 def test_modify_and_keys():
