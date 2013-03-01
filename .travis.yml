@@ -23,5 +23,4 @@ matrix:
       env: DJANGO="django>=1.5"
 install:
   - pip install $DJANGO --use-mirrors
-  - pip install -q redis --use-mirrors
 script: python setup.py nosetests

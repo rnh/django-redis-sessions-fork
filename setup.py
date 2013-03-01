@@ -1,5 +1,5 @@
 from setuptools import setup
-from redis_sessions import __version__
+import sys
 
 
 # no with statement for python 2.5
@@ -13,9 +13,20 @@ def long_description():
 packages = ['redis_sessions']
 
 
+install_requires = [
+    'redis>=2.4.10',
+    'django>=1.4'
+]
+
+if not "__pypy__" in sys.builtin_module_names:
+    major, minor = sys.version_info[:2]
+    if (major, minor) != (3, 3) and (major, minor) != (2, 5):
+        install_requires.append('hiredis>=0.1.1')
+
+
 setup(
     name='django-redis-sessions-fork',
-    version=__version__,
+    version='0.5.0',
     description="Redis Session Backend For Django",
     long_description=long_description(),
     keywords='django, sessions,',
@@ -25,11 +36,7 @@ setup(
     license='BSD',
     packages=packages,
     zip_safe=False,
-    install_requires=[
-        'redis>=2.4.10',
-        'django>=1.4',
-        'hiredis>=0.1.1'
-    ],
+    install_requires=install_requires,
     include_package_data=True,
     classifiers=[
         "Programming Language :: Python :: 2",
