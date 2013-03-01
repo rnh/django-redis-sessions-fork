@@ -31,7 +31,7 @@ download the tarball and run ``python setup.py install``,
 
 4. That's it
 
-See: `django-redis-sessions <http://pypi.python.org/pypi/django-redis-sessions-fork>`_ on pypi
+See: `django-redis-sessions-fork <http://pypi.python.org/pypi/django-redis-sessions-fork>`_ on pypi
 
 5. Tests::
 
