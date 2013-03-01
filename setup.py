@@ -20,7 +20,7 @@ install_requires = [
 
 if not "__pypy__" in sys.builtin_module_names:
     major, minor = sys.version_info[:2]
-    if (major, minor) != (3, 3) and (major, minor) != (2, 5):
+    if (major, minor) != (2, 5):
         install_requires.append('hiredis>=0.1.1')
 
 

@@ -33,8 +33,8 @@ def test_flush():
 def test_items():
     redis_session['item1'], redis_session['item2'] = 1, 2
     redis_session.save()
-    # Python 3.*
-    eq_(list(redis_session.items()), [('item2', 2), ('item1', 1)])
+    # Python 3.* fix
+    eq_(sorted(list(redis_session.items())), [('item1', 1), ('item2', 2)])
 
 
 def test_expiry():
