@@ -26,13 +26,13 @@ if not "__pypy__" in sys.builtin_module_names:
 
 setup(
     name='django-redis-sessions-fork',
-    version='0.5.1',
+    version='0.5.2',
     description="Redis Session Backend For Django",
     long_description=long_description(),
-    keywords='django, sessions,',
+    keywords='django, sessions, redis',
     author='Martin Rusev',
     author_email='hellysmile@gmail.com',
-    url='http://pypi.python.org/pypi/django-redis-sessions-fork',
+    url='https://github.com/hellysmile/django-redis-sessions-fork',
     license='BSD',
     packages=packages,
     zip_safe=False,
