@@ -10,14 +10,14 @@ django-redis-sessions-fork
 installation
 ------------
 
-1. run ``pip install django-redis-sessions-fork`` or alternatively
+run ``pip install django-redis-sessions-fork`` or alternatively
 download the tarball and run ``python setup.py install``
 
-2. set ``redis_sessions.session`` as your session engine, like so::
+set ``redis_sessions.session`` as your session engine, like so::
 
     SESSION_ENGINE = 'redis_sessions.session'
 
-3. optional settings::
+optional settings::
 
     SESSION_REDIS_HOST = 'localhost'
     SESSION_REDIS_PORT = 6379
@@ -30,11 +30,11 @@ download the tarball and run ``python setup.py install``
 
     SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = '/var/run/redis/redis.sock'
 
-4. that's it
+that's it
 
-See: `django-redis-sessions-fork <http://pypi.python.org/pypi/django-redis-sessions-fork>`_ on pypi
+see: `django-redis-sessions-fork <http://pypi.python.org/pypi/django-redis-sessions-fork>`_ on pypi
 
-5. tests::
+tests::
 
     pip install tox
     tox
