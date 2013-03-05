@@ -1,7 +1,7 @@
 django-redis-sessions-fork
 ==========================
 
-:info: Redis database backend for your sessions
+:info: Redis Session Backend For Django
 
 .. image:: https://api.travis-ci.org/hellysmile/django-redis-sessions-fork.png
     :target: https://travis-ci.org/hellysmile/django-redis-sessions-fork
