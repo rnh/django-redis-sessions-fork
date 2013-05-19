@@ -56,6 +56,37 @@ def test_save_and_load():
     session_data = redis_session.load()
     eq_(session_data.get('item_test'), 8)
 
+
+def test_with_redis_url_config():
+    settings.SESSION_REDIS_URL = 'redis://localhost'
+
+    redis_session = import_module(settings.SESSION_ENGINE).SessionStore()
+    redis_server = redis_session.server
+
+    host = redis_server.connection_pool.connection_kwargs.get('host')
+    port = redis_server.connection_pool.connection_kwargs.get('port')
+    db = redis_server.connection_pool.connection_kwargs.get('db')
+
+    eq_(host, 'localhost')
+    eq_(port, 6379)
+    eq_(db, 0)
+
+
+def test_with_unix_url_config():
+    settings.SESSION_REDIS_URL = 'unix:///tmp/redis.sock'
+
+    redis_session = import_module(settings.SESSION_ENGINE).SessionStore()
+    redis_server = redis_session.server
+
+    host = redis_server.connection_pool.connection_kwargs.get('host')
+    port = redis_server.connection_pool.connection_kwargs.get('port')
+    db = redis_server.connection_pool.connection_kwargs.get('db')
+
+    eq_(host, 'localhost')
+    eq_(port, 6379)
+    eq_(db, 0)
+
+
 # def test_load():
 #     redis_session.set_expiry(60)
 #     redis_session['item1'], redis_session['item2'] = 1,2
