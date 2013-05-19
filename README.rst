@@ -38,6 +38,9 @@ optional settings
 
     SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = '/var/run/redis/redis.sock'
 
+    # you can also use redis from url
+    SESSION_REDIS_URL = 'redis://localhost'
+
 tests
 
 .. code-block:: console
