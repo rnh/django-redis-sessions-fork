@@ -16,9 +16,9 @@ SESSION_REDIS_URL = getattr(settings, 'SESSION_REDIS_URL', None)
 
 if SESSION_REDIS_URL is None:
     # redis clouds ENV variables
-    REDIS_ENV_URLS = getattr(
+    SESSION_REDIS_ENV_URLS = getattr(
         settings,
-        'REDIS_ENV_URLS', (
+        'SESSION_REDIS_ENV_URLS', (
             'REDISTOGO_URL',
             'OPENREDIS_URL',
             'REDISGREEN_URL',
@@ -26,7 +26,7 @@ if SESSION_REDIS_URL is None:
         )
     )
 
-    for url in REDIS_ENV_URLS:
+    for url in SESSION_REDIS_ENV_URLS:
         redis_env_url = os.environ.get(url)
         if redis_env_url:
             SESSION_REDIS_URL = redis_env_url

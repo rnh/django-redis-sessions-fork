@@ -8,7 +8,7 @@ from redis_sessions import settings
 
 
 # Avoid new redis connection on each request
-if settings.SESSION_REDIS_URL is not None:
+if not settings.SESSION_REDIS_URL is None:
     redis_server = redis.StrictRedis.from_url(settings.SESSION_REDIS_URL)
 elif settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH is None:
     redis_server = redis.StrictRedis(

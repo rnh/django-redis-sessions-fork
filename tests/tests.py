@@ -1,4 +1,3 @@
-import sys
 import time
 try:
     from imp import reload
@@ -63,46 +62,42 @@ def test_save_and_load():
     session_data = redis_session.load()
     eq_(session_data.get('item_test'), 8)
 
-# detemine python version
-major, minor = sys.version_info[:2]
-# skip next tests on travis-ci.org with python 2.5
-if (major, minor) != (2, 5):
-    def test_redis_url_config():
-        redis_sessions_settings.SESSION_REDIS_URL = 'redis://localhost:6379/0'
 
-        reload(redis_session_module)
+def test_redis_url_config():
+    redis_sessions_settings.SESSION_REDIS_URL = 'redis://localhost:6379/0'
 
-        redis_session = redis_session_module.SessionStore()
-        redis_server = redis_session.server
+    reload(redis_session_module)
 
-        host = redis_server.connection_pool.connection_kwargs.get('host')
-        port = redis_server.connection_pool.connection_kwargs.get('port')
-        db = redis_server.connection_pool.connection_kwargs.get('db')
+    redis_session = redis_session_module.SessionStore()
+    redis_server = redis_session.server
 
-        eq_(host, 'localhost')
-        eq_(port, 6379)
-        eq_(db, 0)
+    host = redis_server.connection_pool.connection_kwargs.get('host')
+    port = redis_server.connection_pool.connection_kwargs.get('port')
+    db = redis_server.connection_pool.connection_kwargs.get('db')
 
-    def test_unix_socket():
-        # Uncomment this in `redis.conf`:
-        #
-        # unixsocket /tmp/redis.sock
-        # unixsocketperm 755
-        redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = \
-            'unix:///tmp/redis.sock'
+    eq_(host, 'localhost')
+    eq_(port, 6379)
+    eq_(db, 0)
 
-        reload(redis_session_module)
 
-        redis_session = redis_session_module.SessionStore()
-        redis_server = redis_session.server
+def test_unix_socket():
+    # Uncomment this in `redis.conf`:
+    #
+    # unixsocket /tmp/redis.sock
+    # unixsocketperm 755
+    redis_sessions_settings.SESSION_REDIS_URL = None
+    redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = 'unix:///tmp/redis.sock'
 
-        host = redis_server.connection_pool.connection_kwargs.get('host')
-        port = redis_server.connection_pool.connection_kwargs.get('port')
-        db = redis_server.connection_pool.connection_kwargs.get('db')
+    reload(redis_session_module)
 
-        eq_(host, 'localhost')
-        eq_(port, 6379)
-        eq_(db, 0)
+    redis_session = redis_session_module.SessionStore()
+    redis_server = redis_session.server
+
+    path = redis_server.connection_pool.connection_kwargs.get('path')
+    db = redis_server.connection_pool.connection_kwargs.get('db')
+
+    eq_(path, 'unix:///tmp/redis.sock')
+    eq_(db, 0)
 
 
 # def test_load():
