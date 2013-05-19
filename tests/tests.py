@@ -1,10 +1,16 @@
 import time
+try:
+    from imp import reload
+except ImportError:
+    pass
 from nose.tools import eq_
 from django.utils.importlib import import_module
 from django.conf import settings
+from redis_sessions import settings as redis_sessions_settings
 
 
-redis_session = import_module(settings.SESSION_ENGINE).SessionStore()
+redis_session_module = import_module(settings.SESSION_ENGINE)
+redis_session = redis_session_module.SessionStore()
 
 
 def test_modify_and_keys():
@@ -57,10 +63,12 @@ def test_save_and_load():
     eq_(session_data.get('item_test'), 8)
 
 
-def test_with_redis_url_config():
-    settings.SESSION_REDIS_URL = 'redis://localhost'
+def test_redis_url_config():
+    redis_sessions_settings.SESSION_REDIS_URL = 'redis://localhost:6379/0'
 
-    redis_session = import_module(settings.SESSION_ENGINE).SessionStore()
+    reload(redis_session_module)
+
+    redis_session = redis_session_module.SessionStore()
     redis_server = redis_session.server
 
     host = redis_server.connection_pool.connection_kwargs.get('host')
@@ -72,10 +80,16 @@ def test_with_redis_url_config():
     eq_(db, 0)
 
 
-def test_with_unix_url_config():
-    settings.SESSION_REDIS_URL = 'unix:///tmp/redis.sock'
+def test_unix_socket():
+    # Uncomment this in `redis.conf`:
+    #
+    # unixsocket /tmp/redis.sock
+    # unixsocketperm 755
+    redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = 'unix:///tmp/redis.sock'
 
-    redis_session = import_module(settings.SESSION_ENGINE).SessionStore()
+    reload(redis_session_module)
+
+    redis_session = redis_session_module.SessionStore()
     redis_server = redis_session.server
 
     host = redis_server.connection_pool.connection_kwargs.get('host')
