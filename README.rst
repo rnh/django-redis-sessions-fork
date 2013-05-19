@@ -14,8 +14,9 @@ django-redis-sessions-fork
 installation
 ------------
 
-run ``pip install django-redis-sessions-fork`` or alternatively
-download the tarball and run ``python setup.py install``
+run ``pip install django-redis-sessions-fork``
+
+or alternatively download the tarball and run ``python setup.py install``
 
 set ``redis_sessions.session`` as your session engine, like so
 
@@ -40,6 +41,12 @@ optional settings
 
     # you can also use redis from url
     SESSION_REDIS_URL = 'redis://localhost:6379/0'
+
+if you one of happy `heroku.com <http://heroku.com/>`_ users
+
+you can skip redis configuration at all
+
+``django-redis-sessions-fork`` already have prefiguration for redis clouds
 
 tests
 
