@@ -27,12 +27,12 @@ optional settings
 
 .. code-block:: python
 
-    # you can skip any
+    # all these options are defaults, you can skip anyone
     SESSION_REDIS_HOST = 'localhost'
     SESSION_REDIS_PORT = 6379
     SESSION_REDIS_DB = 0
-    SESSION_REDIS_PASSWORD = 'password'
-    SESSION_REDIS_PREFIX = 'session'
+    SESSION_REDIS_PASSWORD = None
+    SESSION_REDIS_PREFIX = None
 
     # if you prefer domain socket connection
     # you can just add this line instead of SESSION_REDIS_HOST and SESSION_REDIS_PORT
