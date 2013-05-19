@@ -25,4 +25,5 @@ script:
   - python setup.py nosetests --with-coverage --cover-package=redis_sessions
   - "flake8 --show-source redis_sessions"
 after_success:
-  - sh -c "if [ '2.5' != $(python -c "import sys; print('%s.%s' % sys.version_info[:2])") ]; then pip install coveralls>=0.1.1&&coveralls; fi"
+  - pip install coveralls>=0.1.1
+  - coveralls

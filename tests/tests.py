@@ -1,8 +1,5 @@
 import time
-try:
-    from imp import reload
-except ImportError:
-    pass
+from imp import reload
 from nose.tools import eq_
 from django.utils.importlib import import_module
 from django.conf import settings
@@ -86,7 +83,8 @@ def test_unix_socket():
     # unixsocket /tmp/redis.sock
     # unixsocketperm 755
     redis_sessions_settings.SESSION_REDIS_URL = None
-    redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = 'unix:///tmp/redis.sock'
+    redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = \
+        'unix:///tmp/redis.sock'
 
     reload(redis_session_module)
 
@@ -96,7 +94,7 @@ def test_unix_socket():
     path = redis_server.connection_pool.connection_kwargs.get('path')
     db = redis_server.connection_pool.connection_kwargs.get('db')
 
-    eq_(path, 'unix:///tmp/redis.sock')
+    eq_(path, redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH)
     eq_(db, 0)
 
 
