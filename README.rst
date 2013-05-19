@@ -27,6 +27,7 @@ optional settings
 
 .. code-block:: python
 
+    # you can skip any
     SESSION_REDIS_HOST = 'localhost'
     SESSION_REDIS_PORT = 6379
     SESSION_REDIS_DB = 0
@@ -35,11 +36,10 @@ optional settings
 
     # if you prefer domain socket connection
     # you can just add this line instead of SESSION_REDIS_HOST and SESSION_REDIS_PORT
-
     SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = '/var/run/redis/redis.sock'
 
     # you can also use redis from url
-    SESSION_REDIS_URL = 'redis://localhost'
+    SESSION_REDIS_URL = 'redis://localhost:6379/0'
 
 tests
 
