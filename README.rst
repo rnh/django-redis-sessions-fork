@@ -5,6 +5,10 @@ django-redis-sessions-fork
 
 .. image:: https://api.travis-ci.org/hellysmile/django-redis-sessions-fork.png
     :target: https://travis-ci.org/hellysmile/django-redis-sessions-fork
+.. image:: https://coveralls.io/repos/hellysmile/django-redis-sessions-fork/badge.png?branch=master
+    :target: https://coveralls.io/r/hellysmile/django-redis-sessions-fork?branch=master
+.. image:: https://pypip.in/d/django-redis-sessions-fork/badge.png
+.. image:: https://pypip.in/v/django-redis-sessions-fork/badge.png
 
 
 installation
@@ -13,11 +17,15 @@ installation
 run ``pip install django-redis-sessions-fork`` or alternatively
 download the tarball and run ``python setup.py install``
 
-set ``redis_sessions.session`` as your session engine, like so::
+set ``redis_sessions.session`` as your session engine, like so
+
+.. code-block:: python
 
     SESSION_ENGINE = 'redis_sessions.session'
 
-optional settings::
+optional settings
+
+.. code-block:: python
 
     SESSION_REDIS_HOST = 'localhost'
     SESSION_REDIS_PORT = 6379
@@ -30,11 +38,9 @@ optional settings::
 
     SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = '/var/run/redis/redis.sock'
 
-that's it
+tests
 
-see: `django-redis-sessions-fork <http://pypi.python.org/pypi/django-redis-sessions-fork>`_ on pypi
-
-tests::
+.. code-block:: console
 
     pip install tox
     tox
