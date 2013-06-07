@@ -8,8 +8,17 @@ django-redis-sessions-fork
 .. image:: https://coveralls.io/repos/hellysmile/django-redis-sessions-fork/badge.png?branch=master
     :target: https://coveralls.io/r/hellysmile/django-redis-sessions-fork?branch=master
 .. image:: https://pypip.in/d/django-redis-sessions-fork/badge.png
+    :target: https://pypi.python.org/pypi/django-redis-sessions-fork
 .. image:: https://pypip.in/v/django-redis-sessions-fork/badge.png
+    :target: https://pypi.python.org/pypi/django-redis-sessions-fork
 
+features
+********
+
+* fast NoSQL Django sessions backend
+* invalidation via `TTL <http://redis.io/commands/ttl>`_
+* easy migrations from ``django.contrib.sessions``
+* backward migrations to ``django.contrib.sessions``
 
 installation
 ------------

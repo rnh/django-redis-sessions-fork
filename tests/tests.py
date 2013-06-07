@@ -4,6 +4,7 @@ from nose.tools import eq_
 from django.utils.importlib import import_module
 from django.conf import settings
 from redis_sessions import settings as redis_sessions_settings
+from redis_sessions import connection
 
 
 redis_session_module = import_module(settings.SESSION_ENGINE)
@@ -63,10 +64,9 @@ def test_save_and_load():
 def test_redis_url_config():
     redis_sessions_settings.SESSION_REDIS_URL = 'redis://localhost:6379/0'
 
-    reload(redis_session_module)
+    reload(connection)
 
-    redis_session = redis_session_module.SessionStore()
-    redis_server = redis_session.server
+    redis_server = connection.redis_server
 
     host = redis_server.connection_pool.connection_kwargs.get('host')
     port = redis_server.connection_pool.connection_kwargs.get('port')
@@ -86,21 +86,12 @@ def test_unix_socket():
     redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = \
         'unix:///tmp/redis.sock'
 
-    reload(redis_session_module)
+    reload(connection)
 
-    redis_session = redis_session_module.SessionStore()
-    redis_server = redis_session.server
+    redis_server = connection.redis_server
 
     path = redis_server.connection_pool.connection_kwargs.get('path')
     db = redis_server.connection_pool.connection_kwargs.get('db')
 
     eq_(path, redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH)
     eq_(db, 0)
-
-
-# def test_load():
-#     redis_session.set_expiry(60)
-#     redis_session['item1'], redis_session['item2'] = 1,2
-#     redis_session.save()
-#     session_data = redis_session.server.get(redis_session.session_key)
-#     expiry, data = int(session_data[:15]), session_data[15:]
