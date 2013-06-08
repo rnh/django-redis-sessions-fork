@@ -1,39 +1,34 @@
-from redis_sessions import settings
-from redis_sessions.connection import redis_server
-try:
-    from django.utils.encoding import force_unicode
-except ImportError:  # Python 3.*
-    from django.utils.encoding import force_text as force_unicode
+from redis_sessions import utils, connection
 
 
+@utils.prefix
 def expire(key):
-    return redis_server.ttl(key)
+    return connection.redis_server.ttl(key)
 
 
+@utils.prefix
 def keys(pattern):
-    return redis_server.keys(pattern)
+    return connection.redis_server.keys(pattern)
 
 
-def get(key):
-    return redis_server.get(key)
+@utils.prefix
+def get(key, safe=True):
+    value = connection.redis_server.get(key)
+    if safe:
+        value = utils.force_unicode(value)
+    return value
 
 
+@utils.prefix
 def exists(key):
-    return redis_server.exists(key)
+    return connection.redis_server.exists(key)
 
 
+@utils.prefix
 def delete(key):
-    return redis_server.delete(key)
+    return connection.redis_server.delete(key)
 
 
-def set(key, expire, data):
-    redis_server.setex(key, expire, data)
-
-
-def session_key(session_key):
-    if not settings.SESSION_REDIS_PREFIX:
-        return session_key
-    return '%s:%s' % (
-        settings.SESSION_REDIS_PREFIX,
-        session_key
-    )
+@utils.prefix
+def save(key, expire, data):
+    connection.redis_server.setex(key, expire, data)
