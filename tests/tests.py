@@ -1,3 +1,4 @@
+import os
 import time
 from imp import reload
 from nose.tools import eq_
@@ -64,6 +65,23 @@ def test_save_and_load():
 def test_redis_url_config():
     redis_sessions_settings.SESSION_REDIS_URL = 'redis://localhost:6379/0'
 
+    reload(connection)
+
+    redis_server = connection.redis_server
+
+    host = redis_server.connection_pool.connection_kwargs.get('host')
+    port = redis_server.connection_pool.connection_kwargs.get('port')
+    db = redis_server.connection_pool.connection_kwargs.get('db')
+
+    eq_(host, 'localhost')
+    eq_(port, 6379)
+    eq_(db, 0)
+
+
+def test_redis_url_config_from_env():
+    os.environ['MYREDIS_URL'] = 'redis://localhost:6379/0'
+
+    reload(redis_sessions_settings)
     reload(connection)
 
     redis_server = connection.redis_server
