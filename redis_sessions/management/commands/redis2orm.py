@@ -4,26 +4,18 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.core.management.base import NoArgsCommand
 from django.utils import timezone
 from django.contrib.sessions.models import Session
-from redis_sessions import settings, utils
+from redis_sessions import settings, utils, backend
 
 
 class Command(NoArgsCommand):
-    help = 'copy django orm sessions to redis'
+    help = 'copy redis sessions to django orm'
 
     def handle_noargs(self, **options):
-        if settings.SESSION_REDIS_PREFIX:
-            pattern = '%s:*' % (
-                settings.SESSION_REDIS_PREFIX,
-            )
-        else:
-            pattern = '*'
-
-        for key in utils.keys(pattern):
-            value = utils.get(key)
+        keys = utils.keys(utils.keys_pattern())
+        for key in keys:
+            value = backend.get(key)
 
             if value:
-                value = utils.force_unicode(value)
-
                 try:
                     SessionStore().decode(value)
 
