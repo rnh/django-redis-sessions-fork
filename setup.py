@@ -2,7 +2,11 @@ import sys
 from setuptools import setup
 
 
-packages = ['redis_sessions']
+packages = [
+    'redis_sessions',
+    'redis_sessions.management',
+    'redis_sessions.management.commands'
+]
 
 
 install_requires = [
