@@ -49,4 +49,5 @@ class SessionStore(SessionBase):
             if self.session_key is None:
                 return
             session_key = self.session_key
+
         backend.delete(session_key)
