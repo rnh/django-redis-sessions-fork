@@ -30,5 +30,7 @@ def delete(key):
 
 
 @utils.prefix
-def save(key, expire, data):
-    connection.redis_server.setex(key, expire, data)
+def save(key, expire, data, safe=True):
+    if safe:
+        data = utils.force_unicode(data)
+    connection.redis_server.setex(key, int(expire), data)
