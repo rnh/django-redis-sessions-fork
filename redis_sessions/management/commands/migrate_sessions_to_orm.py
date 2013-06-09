@@ -11,27 +11,38 @@ class Command(NoArgsCommand):
     help = 'copy redis sessions to django orm'
 
     def handle_noargs(self, **options):
-        keys = utils.keys('*')
-        for key in keys:
-            value = backend.get(key)
+        session_keys = backend.keys('*')
 
-            if value:
+        count = len(session_keys)
+        counter = 1
+
+        self.stdout.write('sessions to copy %d\n' % count)
+
+        for session_key in session_keys:
+            self.stdout.write('processing %d of %d\n' % (counter, count))
+
+            session_data = backend.get(session_key)
+
+            if not session_data is None:
                 try:
-                    SessionStore().decode(value)
-
-                    now = timezone.now()
-
-                    expire = now + datetime.timedelta(
-                        seconds=utils.expire(key)
-                    )
-
-                    key = utils.remove_prefix(key)
-
-                    Session(
-                        session_key=key,
-                        session_data=value,
-                        expire_date=expire
-                    ).save()
-
+                    SessionStore().decode(session_data)
                 except Error:
-                    pass
+                    continue
+
+                now = timezone.now()
+
+                expire_date = now + datetime.timedelta(
+                    seconds=backend.expire(session_key)
+                )
+
+                session_key = utils.remove_prefix(session_key)
+
+                Session.objects.filter(session_key=session_key).delete()
+
+                Session(
+                    session_key=session_key,
+                    session_data=session_data,
+                    expire_date=expire_date
+                ).save()
+
+            counter += 1

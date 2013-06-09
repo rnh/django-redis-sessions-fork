@@ -12,13 +12,13 @@ class Command(NoArgsCommand):
 
         try:  # raw sql truncate
             cursor.execute(
-                'TRUNCATE TABLE %s', [Session._meta.db_table]
+                'TRUNCATE TABLE %s' % Session._meta.db_table
             )
+            transaction.commit_unless_managed()
         except DatabaseError:  # sqlite fix
             cursor.execute(
-                'DELETE FROM %s', [Session._meta.db_table]
+                'DELETE FROM %s' % Session._meta.db_table
             )
+            transaction.commit_unless_managed()
         except DatabaseError:  # otherwise via django orm
             Session.objects.all.delete()
-
-        transaction.commit_unless_managed()

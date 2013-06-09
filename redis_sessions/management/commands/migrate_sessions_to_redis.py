@@ -19,14 +19,14 @@ class Command(NoArgsCommand):
         for session in sessions:
             self.stdout.write('processing %d of %d\n' % (counter, count))
 
-            backend.delete(session.session_key)
+            expire_in = session.expire_date - now
+            expire_in = expire_in.seconds + expire_in.days * 86400
 
-            expire = session.expire_date - now
-            expire = expire.seconds + expire.days * 86400
+            backend.delete(session.session_key)
 
             backend.save(
                 session.session_key,
-                expire,
+                expire_in,
                 session.session_data
             )
 
