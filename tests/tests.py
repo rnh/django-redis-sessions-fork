@@ -3,12 +3,12 @@ import time
 from imp import reload
 from nose.tools import eq_
 from django.utils.importlib import import_module
-from django.conf import settings
+from django.conf import settings as django_settings
 from redis_sessions import settings as redis_sessions_settings
-from redis_sessions import connection
+from redis_sessions import connection, utils
 
 
-redis_session_module = import_module(settings.SESSION_ENGINE)
+redis_session_module = import_module(django_settings.SESSION_ENGINE)
 redis_session = redis_session_module.SessionStore()
 
 
@@ -113,3 +113,24 @@ def test_unix_socket():
 
     eq_(path, redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH)
     eq_(db, 0)
+
+
+def test_redis_prefix():
+    eq_(
+        utils.add_prefix('foo'),
+        '%s:foo' % django_settings.SESSION_REDIS_PREFIX
+    )
+
+    eq_(
+        'foo',
+        utils.remove_prefix(utils.add_prefix('foo'))
+    )
+
+    redis_sessions_settings.SESSION_REDIS_PREFIX = ''
+
+    eq_(utils.add_prefix('foo'), 'foo')
+
+    eq_(
+        'foo',
+        utils.remove_prefix(utils.add_prefix('foo'))
+    )
