@@ -12,15 +12,11 @@ class Command(NoArgsCommand):
 
         try:  # raw sql truncate
             cursor.execute(
-                'TRUNCATE TABLE "%s";' % (
-                    Session._meta.db_table,
-                )
+                'TRUNCATE TABLE %s', [Session._meta.db_table]
             )
-        except DatabaseError:  # multiple sql servers fix
+        except DatabaseError:  # sqlite fix
             cursor.execute(
-                'DELETE FROM %s;' % (
-                    Session._meta.db_table,
-                )
+                'DELETE FROM %s', [Session._meta.db_table]
             )
         except DatabaseError:  # otherwise via django orm
             Session.objects.all.delete()

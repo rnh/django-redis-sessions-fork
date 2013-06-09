@@ -33,7 +33,8 @@ set ``redis_sessions.session`` as your session engine, like so
 
     SESSION_ENGINE = 'redis_sessions.session'
 
-optional settings
+configuration
+-------------
 
 .. code-block:: python
 
@@ -57,7 +58,24 @@ you can skip redis configuration at all
 
 ``django-redis-sessions-fork`` already have prefiguration for redis clouds
 
+sessions migration
+------------------
+
+add ``redis_sessions`` to your ``INSTALLED_APPS``
+
+.. code-block:: console
+
+    # copy orm sessions to redis
+    python manage.py migrate_sessions_to_redis
+    # copy redis sessions to orm
+    python manage.py migrate_sessions_to_orm
+    # flush redis sessions
+    python manage.py flush_redis_sessions
+    # flush orm sessions
+    python manage.py flush_orm_sessions
+
 tests
+-----
 
 .. code-block:: console
 
