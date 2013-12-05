@@ -73,7 +73,7 @@ alternative you can use `ujson <https://github.com/esnme/ultrajson>`_ serializer
 
     pip install ujson
 
-.. codeblock:: python
+.. code-block:: python
 
     SESSION_SERIALIZER = 'redis_sessions_fork.serializers.UjsonSerializer',
 
@@ -83,17 +83,17 @@ or `msgpack <http://msgpack.org/>`_ serializer via C based extension
 
     pip install msgpack-python
 
-.. codeblock:: python
+.. code-block:: python
 
     SESSION_SERIALIZE = 'redis_sessions_fork.serializers.MsgpackSerializer'
 
-or`msgpack <http://msgpack.org/>`_ serializer written in pure Python
+or `msgpack <http://msgpack.org/>`_ serializer written in pure Python
 
 .. code-block:: console
 
     pip install u-msgpack-python
 
-.. codeblock:: python
+.. code-block:: python
 
     SESSION_SERIALIZER = 'redis_sessions_fork.serializers.UmsgpackSerializer'
 
