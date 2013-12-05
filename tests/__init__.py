@@ -2,7 +2,17 @@ from django.conf import settings
 
 
 settings.configure(
-    SESSION_ENGINE='redis_sessions.session',
-    SESSION_REDIS_PREFIX='django_sessions',
-    INSTALLED_APPS=('django.contrib.sessions', 'redis_sessions')
+    SESSION_ENGINE='redis_sessions_fork.session',
+    SESSION_SERIALIZER='redis_sessions_fork.serializers.UmsgpackSerializer',
+    SESSION_REDIS_PREFIX='django_sessions_tests',
+    INSTALLED_APPS=(
+        'django.contrib.sessions',
+        'redis_sessions_fork'
+    ),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:'
+        }
+    }
 )

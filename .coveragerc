@@ -1,2 +1,2 @@
 [run]
-include = redis_sessions/*
+include = redis_sessions_fork/*

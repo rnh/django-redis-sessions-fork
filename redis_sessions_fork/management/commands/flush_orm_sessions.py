@@ -7,7 +7,7 @@ from django.contrib.sessions.models import Session
 class Command(NoArgsCommand):
     help = 'flush all django orm sessions'
 
-    def handle_noargs(self, **options):
+    def handle_noargs(self, *args, **wargs):
         cursor = connection.cursor()
 
         try:  # raw sql truncate

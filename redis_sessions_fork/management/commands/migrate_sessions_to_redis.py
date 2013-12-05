@@ -1,13 +1,14 @@
 from django.core.management.base import NoArgsCommand
 from django.utils import timezone
 from django.contrib.sessions.models import Session
-from redis_sessions import backend
+
+from ... import backend
 
 
 class Command(NoArgsCommand):
     help = 'copy django orm sessions to redis'
 
-    def handle_noargs(self, **options):
+    def handle_noargs(self, *args, **kwargs):
         now = timezone.now()
 
         sessions = Session.objects.filter(expire_date__gt=now)
@@ -27,7 +28,8 @@ class Command(NoArgsCommand):
             backend.save(
                 session.session_key,
                 expire_in,
-                session.session_data
+                session.session_data,
+                False
             )
 
             counter += 1

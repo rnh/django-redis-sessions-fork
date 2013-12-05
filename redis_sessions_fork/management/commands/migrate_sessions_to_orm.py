@@ -1,16 +1,18 @@
 import datetime
 from binascii import Error
-from django.contrib.sessions.backends.db import SessionStore
+
 from django.core.management.base import NoArgsCommand
 from django.utils import timezone
 from django.contrib.sessions.models import Session
-from redis_sessions import utils, backend
+
+from ... import utils, backend
+from ...session import SessionStore
 
 
 class Command(NoArgsCommand):
     help = 'copy redis sessions to django orm'
 
-    def handle_noargs(self, **options):
+    def handle_noargs(self, *args, **kwargs):
         session_keys = backend.keys('*')
 
         count = len(session_keys)
@@ -26,7 +28,7 @@ class Command(NoArgsCommand):
             if not session_data is None:
                 try:
                     SessionStore().decode(session_data)
-                except Error:
+                except (Error, TypeError):
                     continue
 
                 now = timezone.now()

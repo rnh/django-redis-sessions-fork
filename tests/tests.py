@@ -1,69 +1,115 @@
 import os
 import time
 from imp import reload
-from nose.tools import eq_
-from django.utils.importlib import import_module
+
 from django.conf import settings as django_settings
-from redis_sessions import settings as redis_sessions_settings
-from redis_sessions import connection, utils
+from django.contrib.sessions.backends.base import CreateError
+from django.core import management
+from django.contrib.sessions.models import Session
+
+from redis_sessions_fork import settings as session_settings
+from redis_sessions_fork import connection, utils, backend
 
 
-redis_session_module = import_module(django_settings.SESSION_ENGINE)
-redis_session = redis_session_module.SessionStore()
+session_module = utils.import_module(django_settings.SESSION_ENGINE)
+session = session_module.SessionStore()
+
+
+management.call_command('syncdb', interactive=False)
+
+
+def test_redis_prefix():
+    assert utils.add_prefix('foo') == \
+        '%s:foo' % django_settings.SESSION_REDIS_PREFIX
+
+    assert 'foo' == utils.remove_prefix(utils.add_prefix('foo'))
+
+    session_settings.SESSION_REDIS_PREFIX = ''
+
+    assert utils.add_prefix('foo') == 'foo'
+    assert 'foo' == utils.remove_prefix(utils.add_prefix('foo'))
 
 
 def test_modify_and_keys():
-    eq_(redis_session.modified, False)
-    redis_session['test'] = 'test_me'
-    eq_(redis_session.modified, True)
-    eq_(redis_session['test'], 'test_me')
+    assert not session.modified
+
+    session['test'] = 'test_me'
+
+    assert session.modified
+
+    assert session['test'] == 'test_me'
 
 
 def test_save_and_delete():
-    redis_session['key'] = 'value'
-    redis_session.save()
-    eq_(redis_session.exists(redis_session.session_key), True)
-    redis_session.delete(redis_session.session_key)
-    eq_(redis_session.exists(redis_session.session_key), False)
+    session['key'] = 'value'
+    session.save()
+
+    assert session.exists(session.session_key)
+
+    session.delete(session.session_key)
+
+    assert not session.exists(session.session_key)
 
 
 def test_flush():
-    redis_session['key'] = 'another_value'
-    redis_session.save()
-    key = redis_session.session_key
-    redis_session.flush()
-    eq_(redis_session.exists(key), False)
+    session['key'] = 'another_value'
+    session.save()
+
+    key = session.session_key
+
+    session.flush()
+
+    assert not session.exists(key)
 
 
 def test_items():
-    redis_session['item1'], redis_session['item2'] = 1, 2
-    redis_session.save()
+    session['item1'], session['item2'] = 1, 2
+    session.save()
+
     # Python 3.* fix
-    eq_(sorted(list(redis_session.items())), [('item1', 1), ('item2', 2)])
+    assert sorted(list(session.items())) == [('item1', 1), ('item2', 2)]
 
 
 def test_expiry():
-    redis_session.set_expiry(1)
-    # Test if the expiry age is set correctly
-    eq_(redis_session.get_expiry_age(), 1)
-    redis_session['key'] = 'expiring_value'
-    redis_session.save()
-    key = redis_session.session_key
-    eq_(redis_session.exists(key), True)
+    session.set_expiry(1)
+
+    assert session.get_expiry_age() == 1
+
+    session['key'] = 'expiring_value'
+    session.save()
+
+    key = session.session_key
+
+    assert session.exists(key)
+
     time.sleep(2)
-    eq_(redis_session.exists(key), False)
+
+    assert not session.exists(key)
 
 
 def test_save_and_load():
-    redis_session.set_expiry(60)
-    redis_session.setdefault('item_test', 8)
-    redis_session.save()
-    session_data = redis_session.load()
-    eq_(session_data.get('item_test'), 8)
+    session.set_expiry(60)
+    session.setdefault('item_test', 8)
+    session.save()
+
+    session_data = session.load()
+
+    assert session_data.get('item_test') == 8
+
+
+def test_save_existing_key():
+    try:
+        session.save(must_create=True)
+
+        assert False
+    except CreateError:
+        pass
 
 
 def test_redis_url_config():
-    redis_sessions_settings.SESSION_REDIS_URL = 'redis://localhost:6379/0'
+    reload(session_settings)
+
+    session_settings.SESSION_REDIS_URL = 'redis://localhost:6379/0'
 
     reload(connection)
 
@@ -73,26 +119,9 @@ def test_redis_url_config():
     port = redis_server.connection_pool.connection_kwargs.get('port')
     db = redis_server.connection_pool.connection_kwargs.get('db')
 
-    eq_(host, 'localhost')
-    eq_(port, 6379)
-    eq_(db, 0)
-
-
-def test_redis_url_config_from_env():
-    os.environ['MYREDIS_URL'] = 'redis://localhost:6379/0'
-
-    reload(redis_sessions_settings)
-    reload(connection)
-
-    redis_server = connection.redis_server
-
-    host = redis_server.connection_pool.connection_kwargs.get('host')
-    port = redis_server.connection_pool.connection_kwargs.get('port')
-    db = redis_server.connection_pool.connection_kwargs.get('db')
-
-    eq_(host, 'localhost')
-    eq_(port, 6379)
-    eq_(db, 0)
+    assert host == 'localhost'
+    assert port == 6379
+    assert db == 0
 
 
 def test_unix_socket():
@@ -100,8 +129,9 @@ def test_unix_socket():
     #
     # unixsocket /tmp/redis.sock
     # unixsocketperm 755
-    redis_sessions_settings.SESSION_REDIS_URL = None
-    redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = \
+    reload(session_settings)
+
+    session_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = \
         'unix:///tmp/redis.sock'
 
     reload(connection)
@@ -111,26 +141,114 @@ def test_unix_socket():
     path = redis_server.connection_pool.connection_kwargs.get('path')
     db = redis_server.connection_pool.connection_kwargs.get('db')
 
-    eq_(path, redis_sessions_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH)
-    eq_(db, 0)
+    assert path == session_settings.SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH
+
+    assert db == 0
 
 
-def test_redis_prefix():
-    eq_(
-        utils.add_prefix('foo'),
-        '%s:foo' % django_settings.SESSION_REDIS_PREFIX
+test_connection_pool = connection.redis.ConnectionPool(
+    host=session_settings.SESSION_REDIS_HOST,
+    port=session_settings.SESSION_REDIS_PORT,
+    db=session_settings.SESSION_REDIS_DB,
+    password=session_settings.SESSION_REDIS_PASSWORD
+)
+
+
+def test_with_connection_pool_config():
+    reload(session_settings)
+
+    session_settings.SESSION_REDIS_CONNECTION_POOL = \
+        'tests.tests.test_connection_pool'
+
+    reload(connection)
+
+    redis_server = connection.redis_server
+
+    assert redis_server.connection_pool == test_connection_pool
+
+
+def test_redis_url_config_from_env():
+    reload(session_settings)
+
+    os.environ['MYREDIS_URL'] = 'redis://localhost:6379/0'
+
+    reload(session_settings)
+    reload(connection)
+
+    redis_server = connection.redis_server
+
+    host = redis_server.connection_pool.connection_kwargs.get('host')
+    port = redis_server.connection_pool.connection_kwargs.get('port')
+    db = redis_server.connection_pool.connection_kwargs.get('db')
+
+    assert host == 'localhost'
+    assert port == 6379
+    assert db == 0
+
+
+def test_serializers():
+    test_object = {'foo': 'bar'}
+    test_object_py3k = {b'foo': b'bar'}
+
+    for class_name in (
+        'UjsonSerializer', 'MsgpackSerializer', 'UmsgpackSerializer',
+    ):
+        try:
+            serializer = utils.import_by_path(
+                'redis_sessions_fork.serializers.%s' % class_name
+            )()
+        except ImportError:
+            continue
+
+        serializer_data = serializer.loads(serializer.dumps(test_object))
+
+        assert test_object == serializer_data or \
+            test_object_py3k == serializer_data
+
+
+def test_flush_redis_sessions():
+    session['foo'] = 'bar'
+    session.save()
+
+    keys_before_flush = backend.keys('*')
+
+    management.call_command('flush_redis_sessions')
+
+    keys_after_flush = backend.keys('*')
+
+    assert not keys_before_flush == keys_after_flush
+
+    assert len(keys_after_flush) == 0
+
+
+def test_migrate_to_orm():
+    session['foo'] = 'bar'
+    session.save()
+
+    management.call_command('migrate_sessions_to_orm')
+
+    orm_session = Session.objects.all()[0]
+
+    assert session.decode(orm_session.session_data)['foo'] == 'bar'
+
+
+def test_migrate_to_redis():
+    management.call_command('flush_redis_sessions')
+
+    management.call_command('migrate_sessions_to_redis')
+
+    orm_session = Session.objects.all()[0]
+
+    check_session = session_module.SessionStore(
+        session_key=orm_session.session_key
     )
 
-    eq_(
-        'foo',
-        utils.remove_prefix(utils.add_prefix('foo'))
-    )
+    assert check_session.load()['foo'] == 'bar'
 
-    redis_sessions_settings.SESSION_REDIS_PREFIX = ''
 
-    eq_(utils.add_prefix('foo'), 'foo')
+def test_flush_orm_sessions():
+    management.call_command('flush_orm_sessions')
 
-    eq_(
-        'foo',
-        utils.remove_prefix(utils.add_prefix('foo'))
-    )
+    orm_session = Session.objects.all()
+
+    assert orm_session.count() == 0

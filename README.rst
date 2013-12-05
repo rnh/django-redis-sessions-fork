@@ -12,16 +12,17 @@ django-redis-sessions-fork
 .. image:: https://pypip.in/v/django-redis-sessions-fork/badge.png
     :target: https://pypi.python.org/pypi/django-redis-sessions-fork
 
-features
+Features
 ********
 
-* fast NoSQL Django sessions backend
-* invalidation via `TTL <http://redis.io/commands/ttl>`_
-* easy migrations from ``django.contrib.sessions``
-* backward migrations to ``django.contrib.sessions``
+* Fast NoSQL Django sessions backend
+* Invalidation via `TTL <http://redis.io/commands/ttl>`_
+* Easy migrations from ``django.contrib.sessions``
+* Fastest session serializers
+* Backward migrations to ``django.contrib.sessions``
 
-installation
-------------
+Installation
+************
 
 run ``pip install django-redis-sessions-fork``
 
@@ -31,15 +32,15 @@ set ``redis_sessions.session`` as your session engine, like so
 
 .. code-block:: python
 
-    SESSION_ENGINE = 'redis_sessions.session'
+    SESSION_ENGINE = 'redis_sessions_fork.session'
 
-configuration
--------------
+Configuration
+*************
 
 .. code-block:: python
 
     # all these options are defaults, you can skip anyone
-    SESSION_REDIS_HOST = 'localhost'
+    SESSION_REDIS_HOST = '127.0.0.1'
     SESSION_REDIS_PORT = 6379
     SESSION_REDIS_DB = 0
     SESSION_REDIS_PASSWORD = None
@@ -50,7 +51,10 @@ configuration
     SESSION_REDIS_UNIX_DOMAIN_SOCKET_PATH = '/var/run/redis/redis.sock'
 
     # you can also use redis from url
-    SESSION_REDIS_URL = 'redis://localhost:6379/0'
+    SESSION_REDIS_URL = 'redis://127.0.0.1:6379/0'
+
+    # also available setup connection via redis.ConnectionPool like
+    SESSION_REDIS_CONNECTION_POOL = 'random.app.redis_connection_pool'
 
 if you one of happy `heroku.com <http://heroku.com/>`_ users
 
@@ -58,10 +62,47 @@ you can skip redis configuration at all
 
 ``django-redis-sessions-fork`` already have prefiguration for redis clouds
 
-sessions migration
-------------------
+Serializer's
+************
 
-add ``redis_sessions`` to your ``INSTALLED_APPS``
+Django>=1.5.3 `supports <https://docs.djangoproject.com/en/1.5/topics/http/sessions/#session-serialization>`_ different session serializers, such as ``django.contrib.sessions.serializers.PickleSerializer`` and ``django.contrib.sessions.serializers.JSONSerializer``
+
+alternative you can use `ujson <https://github.com/esnme/ultrajson>`_ serializer
+
+.. code-block:: console
+
+    pip install ujson
+
+.. codeblock:: python
+
+    SESSION_SERIALIZER = 'redis_sessions_fork.serializers.UjsonSerializer',
+
+or `msgpack <http://msgpack.org/>`_ serializer via C based extension
+
+.. code-block:: console
+
+    pip install msgpack-python
+
+.. codeblock:: python
+
+    SESSION_SERIALIZE = 'redis_sessions_fork.serializers.MsgpackSerializer'
+
+or`msgpack <http://msgpack.org/>`_ serializer written in pure Python
+
+.. code-block:: console
+
+    pip install u-msgpack-python
+
+.. codeblock:: python
+
+    SESSION_SERIALIZER = 'redis_sessions_fork.serializers.UmsgpackSerializer'
+
+all of them is bit faster then default serializers, but may not handle some data types
+
+Sessions migration
+******************
+
+add ``redis_sessions_fork`` to your ``INSTALLED_APPS``
 
 .. code-block:: console
 
@@ -74,8 +115,8 @@ add ``redis_sessions`` to your ``INSTALLED_APPS``
     # flush orm sessions
     python manage.py flush_orm_sessions
 
-tests
------
+Tests
+*****
 
 .. code-block:: console
 
