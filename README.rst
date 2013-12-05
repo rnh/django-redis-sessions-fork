@@ -11,6 +11,8 @@ django-redis-sessions-fork
     :target: https://pypi.python.org/pypi/django-redis-sessions-fork
 .. image:: https://pypip.in/v/django-redis-sessions-fork/badge.png
     :target: https://pypi.python.org/pypi/django-redis-sessions-fork
+.. image:: https://d2weczhvl823v0.cloudfront.net/hellysmile/django-redis-sessions-fork/trend.png
+   :target: https://bitdeli.com/free
 
 Features
 ********
@@ -122,9 +124,3 @@ Tests
 
     pip install tox
     tox
-
-
-.. image:: https://d2weczhvl823v0.cloudfront.net/hellysmile/django-redis-sessions-fork/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
-
