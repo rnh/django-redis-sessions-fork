@@ -2,7 +2,6 @@ import datetime
 from binascii import Error
 
 from django.core.management.base import NoArgsCommand
-from django.utils import timezone
 from django.contrib.sessions.models import Session
 
 from ... import utils, backend
@@ -31,7 +30,7 @@ class Command(NoArgsCommand):
                 except (Error, TypeError):
                     continue
 
-                now = timezone.now()
+                now = utils.timezone.now()
 
                 expire_date = now + datetime.timedelta(
                     seconds=backend.expire(session_key)

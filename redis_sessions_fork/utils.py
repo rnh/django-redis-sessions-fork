@@ -5,6 +5,11 @@ try:  # Python 2.*
 except ImportError:  # Python 3.*
     from django.utils.encoding import force_text
     force_unicode = force_text
+try:  # Django >= 1.4
+    from django.utils import timezone
+except ImportError:  # Django < 1.4
+    from datetime import datetime
+    timezone = datetime
 from django.utils.importlib import import_module
 
 from . import settings
