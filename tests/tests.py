@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-.
 import os
 import time
 from imp import reload
@@ -95,6 +96,16 @@ def test_save_and_load():
     session_data = session.load()
 
     assert session_data.get('item_test') == 8
+
+
+def test_save_and_load_nonascii():
+    session['nonascii'] = 'тест'
+    session.save()
+
+    session_data = session.load()
+
+    assert utils.force_unicode(session_data['nonascii']) == \
+        utils.force_unicode('тест')
 
 
 def test_save_existing_key():

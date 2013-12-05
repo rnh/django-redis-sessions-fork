@@ -3,10 +3,10 @@ try:
 
     class UjsonSerializer(object):
         def dumps(self, obj):
-            return ujson.dumps(obj)
+            return ujson.dumps(obj).encode('latin-1')
 
         def loads(self, data):
-            return ujson.loads(data)
+            return ujson.loads(data.decode('latin-1'))
 except ImportError:
     pass
 

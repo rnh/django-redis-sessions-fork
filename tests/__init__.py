@@ -3,7 +3,7 @@ from django.conf import settings
 
 settings.configure(
     SESSION_ENGINE='redis_sessions_fork.session',
-    SESSION_SERIALIZER='redis_sessions_fork.serializers.UmsgpackSerializer',
+    # SESSION_SERIALIZER='redis_sessions_fork.serializers.UjsonSerializer',
     SESSION_REDIS_PREFIX='django_sessions_tests',
     INSTALLED_APPS=(
         'django.contrib.sessions',
