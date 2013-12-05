@@ -30,7 +30,7 @@ run ``pip install django-redis-sessions-fork``
 
 or alternatively download the tarball and run ``python setup.py install``
 
-set ``redis_sessions.session`` as your session engine, like so
+set ``redis_sessions_fork.session`` as your session engine, like so
 
 .. code-block:: python
 
