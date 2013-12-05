@@ -69,7 +69,7 @@ Serializer's
 
 Django>=1.5.3 `supports <https://docs.djangoproject.com/en/1.5/topics/http/sessions/#session-serialization>`_ different session serializers, such as ``django.contrib.sessions.serializers.PickleSerializer`` and ``django.contrib.sessions.serializers.JSONSerializer``
 
-alternative you can use `ujson <https://github.com/esnme/ultrajson>`_ serializer
+alternative you can use `ujson <https://github.com/esnme/ultrajson>`_ serializer, which is more faster then default
 
 .. code-block:: console
 
@@ -105,7 +105,7 @@ then
 
     SESSION_SERIALIZER = 'redis_sessions_fork.serializers.UmsgpackSerializer'
 
-all of them is bit faster then default serializers, but may not handle some data types
+msgpack serializers, may not handle some data types
 
 Sessions migration
 ******************
