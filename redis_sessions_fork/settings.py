@@ -47,6 +47,12 @@ SESSION_REDIS_CONNECTION_POOL = getattr(
     None
 )
 
+SESSION_REDIS_JSON_ENCODING = getattr(
+    settings,
+    'SESSION_REDIS_JSON_ENCODING',
+    'latin-1'
+)
+
 if SESSION_REDIS_URL is None:
     # redis clouds ENV variables
     SESSION_REDIS_ENV_URLS = getattr(
