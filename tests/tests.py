@@ -199,10 +199,9 @@ def test_redis_url_config_from_env():
 
 def test_serializers():
     test_object = {'foo': 'bar'}
-    test_object_py3k = {b'foo': b'bar'}
 
     for class_name in (
-        'UjsonSerializer', 'MsgpackSerializer', 'UmsgpackSerializer',
+        'UjsonSerializer',
     ):
         try:
             serializer = utils.import_by_path(
@@ -213,8 +212,7 @@ def test_serializers():
 
         serializer_data = serializer.loads(serializer.dumps(test_object))
 
-        assert test_object == serializer_data or \
-            test_object_py3k == serializer_data
+        assert test_object == serializer_data
 
 
 def test_flush_redis_sessions():

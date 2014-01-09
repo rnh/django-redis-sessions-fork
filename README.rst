@@ -81,31 +81,11 @@ then
 
     SESSION_SERIALIZER = 'redis_sessions_fork.serializers.UjsonSerializer',
 
-or `msgpack <http://msgpack.org/>`_ serializer via C based extension
-
-.. code-block:: console
-
-    pip install msgpack-python
-
-then
+in addition it is possible to configure `ujson <https://github.com/esnme/ultrajson>`_ encoding, like
 
 .. code-block:: python
 
-    SESSION_SERIALIZER = 'redis_sessions_fork.serializers.MsgpackSerializer'
-
-or `msgpack <http://msgpack.org/>`_ serializer written in pure Python
-
-.. code-block:: console
-
-    pip install u-msgpack-python
-
-then
-
-.. code-block:: python
-
-    SESSION_SERIALIZER = 'redis_sessions_fork.serializers.UmsgpackSerializer'
-
-msgpack serializers, may not handle some data types
+    SESSION_REDIS_JSON_ENCODING = 'utf8' # default is 'latin-1'
 
 Sessions migration
 ******************
