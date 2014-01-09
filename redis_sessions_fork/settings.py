@@ -52,11 +52,11 @@ if SESSION_REDIS_URL is None:
     SESSION_REDIS_ENV_URLS = getattr(
         settings,
         'SESSION_REDIS_ENV_URLS', (
+            'REDISCLOUD_URL'
             'REDISTOGO_URL',
             'OPENREDIS_URL',
             'REDISGREEN_URL',
             'MYREDIS_URL',
-            'REDISCLOUD_URL'
         )
     )
 
