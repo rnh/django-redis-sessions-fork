@@ -1,12 +1,14 @@
+from .settings import SESSION_REDIS_JSON_ENCODING
+
 try:
     import ujson
 
     class UjsonSerializer(object):
         def dumps(self, obj):
-            return ujson.dumps(obj).encode('latin-1')
+            return ujson.dumps(obj).encode(SESSION_REDIS_JSON_ENCODING)
 
         def loads(self, data):
-            return ujson.loads(data.decode('latin-1'))
+            return ujson.loads(data.decode(SESSION_REDIS_JSON_ENCODING))
 except ImportError:
     pass
 
