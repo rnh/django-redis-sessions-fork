@@ -79,7 +79,7 @@ then
 
 .. code-block:: python
 
-    SESSION_SERIALIZER = 'redis_sessions_fork.serializers.UjsonSerializer',
+    SESSION_SERIALIZER = 'redis_sessions_fork.serializers.UjsonSerializer'
 
 in addition it is possible to configure `ujson <https://github.com/esnme/ultrajson>`_ encoding, like
 
